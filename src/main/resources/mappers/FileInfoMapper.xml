@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.3//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper/dao 文件的位置 -->
+<mapper namespace="org.dev1.mapper.FileInfoMapper">
+    <insert id="insert" parameterType="org.dev1.model.FileInfoDb" >
+        insert into fileinfo
+            (id, filepath, filename, filesize, extension)
+        values
+            (#{id}, #{filepath}, #{filename}, #{filesize}, #{extension})
+    </insert>
+
+    <insert id="batchInsert">
+        insert into fileinfo
+        (id, filepath, filename, filesize, extension)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},
+            #{item.filepath},
+            #{item.filename},
+            #{item.filesize},
+            #{item.extension})
+        </foreach>
+    </insert>
+
+</mapper>
