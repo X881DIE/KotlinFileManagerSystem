@@ -2,10 +2,12 @@ package org.dev1.util
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.LocalDateTime
 
 import kotlin.io.path.extension
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.name
+import kotlin.streams.toList
 
 
 /**
@@ -20,7 +22,20 @@ data class FileInfo(
     val path:Path,
     val size:Long,
     val extension:String
-)
+){
+    override fun toString(): String {
+        return "$path,$size \n"
+    }
+
+}
+
+/**
+ * 统计文件的后缀名
+ */
+fun FileTypesCount(files: List<FileInfo>): Map<String,Int> {
+    return files.groupingBy { it.extension }.eachCount()
+}
+
 
 /**
  * 扫描文件夹
@@ -69,4 +84,41 @@ fun treeDir(path: Path):List<FileInfo>{
             .toList()
     }
 
+}
+
+val TypeMap:HashMap<String,String> = HashMap(100)
+
+fun FileType(x: String): String {
+    TypeMap["dll"] = "mp4"
+    TypeMap["mp4"] = "MP4视频"
+    TypeMap["exe"] = "windows可执行文件"
+    TypeMap["txt"] = "TEXT文本文件"
+    TypeMap["pdf"] = "便携式文档PDF"
+    TypeMap["json"] = "java script对象文件"
+
+     return if(TypeMap[x] == null) x else TypeMap[x].toString()
+}
+fun treePath(path: Path):List<org.dev1.model.FileInfo>{
+    require(Files.exists(path)){
+        "Path does not exist:$path"
+    }
+    val SnowId = SnowflakeIdGenerator(3,1)
+    Files.walk((path)).use { stream ->
+        return stream
+            .filter{Files.isRegularFile(it)}
+            .map { p->
+                org.dev1.model.FileInfo(
+                    id = SnowId.nextId(),
+                    filename = p.fileName.toString(),
+                    extension = p.extension,
+                    size = Files.size(p),
+                    modifiertime = LocalDateTime.now(),
+                    physicspath = p.toString(),
+                    logicpath = p.toString(),
+                    filetype = FileType(p.extension),
+                    filehash = p.hashCode().toString()
+                )
+
+             }.toList()
+    }
 }

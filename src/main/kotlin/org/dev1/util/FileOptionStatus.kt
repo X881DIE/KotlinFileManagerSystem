@@ -1,3 +1,6 @@
 package org.dev1.util
 
-annotation class FileOptionStatus()
+enum class FileOptionStatus {
+    A,
+    B
+}

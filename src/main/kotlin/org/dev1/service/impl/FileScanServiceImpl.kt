@@ -16,7 +16,7 @@ class FileScanServiceImpl( private val mapper: FileInfoMapper): FileScanService 
     /**
      * 扫描文件存储到数据库
      */
-    fun scanAndSave(root: Path) {
+    override fun scanAndSave(root: Path) {
         val list = Files.walk(root)
             .filter { Files.isRegularFile(it) }
             .map { p ->

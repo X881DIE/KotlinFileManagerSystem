@@ -10,6 +10,7 @@ interface FileSystemManager {
      */
     fun addFile(file:FileInfo):FileOptionStatus
 
+
     /**
      * 删除文件
      */
